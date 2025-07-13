@@ -1,0 +1,34 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background: #f0f0f0;
+  padding: 20px;
+  text-align: center;
+}
+#canvasArea {
+  width: 1080px;
+  height: 1080px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+  overflow: hidden;
+  padding: 30px;
+}
+#textPreview {
+  color: #333;
+  font-size: 60px;
+  text-align: center;
+  word-wrap: break-word;
+  width: 90%;
+}
+input, select, button {
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
+}
+.controls {
+  margin-bottom: 20px;
+}
