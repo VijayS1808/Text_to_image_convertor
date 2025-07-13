@@ -1,31 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Text to Image for Insta Reels</title>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <link rel="stylesheet" href="style.css">
+  <title>Insta Reels Text Image Creator</title>
+  <style>
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+    #canvasArea {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-  <h1>📸 Text to Image Creator</h1>
+  <h1>🎨 Insta Reels Text Image Creator</h1>
+  <input type="text" id="textInput" placeholder="Type your text here" size="40">
+  <br>
+  <button onclick="createImage()">Generate Image</button>
+  <button onclick="downloadImage()">Download Image</button>
 
-  <div class="controls">
-    <textarea id="textInput" rows="3" cols="50" placeholder="Type your text here..." oninput="updateText()"></textarea><br>
-    <label>Font Size:</label>
-    <input type="number" id="fontSize" value="60" onchange="updateStyle()"> px
-    <label>Text Color:</label>
-    <input type="color" id="textColor" value="#333333" onchange="updateStyle()">
-    <label>Background:</label>
-    <input type="color" id="bgColor" value="#ffffff" onchange="updateStyle()">
-    <button onclick="downloadImage()">📥 Download Image</button>
-  </div>
+  <canvas id="canvasArea" width="1080" height="1920"></canvas>
 
-  <div id="canvasArea">
-    <div id="textPreview">Your text here...</div>
-  </div>
+  <script>
+    function createImage() {
+      let canvas = document.getElementById("canvasArea");
+      let ctx = canvas.getContext("2d");
+      let text = document.getElementById("textInput").value;
 
-  <script src="script.js"></script>
+      // Gradient Background
+      let gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+      gradient.addColorStop(0, "#f093fb");
+      gradient.addColorStop(1, "#f5576c");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 1080, 1920);
+
+      // Text Styling
+      ctx.font = "bold 80px Poppins";
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      // Word Wrap Function
+      let maxWidth = 900;
+      let lineHeight = 100;
+      let x = 1080 / 2;
+      let y = 1920 / 2;
+
+      let words = text.split(' ');
+      let line = '';
+      let lines = [];
+      for (let n = 0; n < words.length; n++) {
+        let testLine = line + words[n] + ' ';
+        let metrics = ctx.measureText(testLine);
+        let testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+          lines.push(line);
+          line = words[n] + ' ';
+        } else {
+          line = testLine;
+        }
+      }
+      lines.push(line);
+
+      let startY = y - (lines.length / 2) * lineHeight;
+      for (let i = 0; i < lines.length; i++) {
+        ctx.fillText(lines[i], x, startY + (i * lineHeight));
+      }
+
+      canvas.style.display = "block";
+    }
+
+    function downloadImage() {
+      let canvas = document.getElementById("canvasArea");
+      let link = document.createElement("a");
+      link.download = "insta_reel_image.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+  </script>
 
 </body>
 </html>
