@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Text to Image for Insta Reels</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>📸 Text to Image Creator</h1>
+
+  <div class="controls">
+    <textarea id="textInput" rows="3" cols="50" placeholder="Type your text here..." oninput="updateText()"></textarea><br>
+    <label>Font Size:</label>
+    <input type="number" id="fontSize" value="60" onchange="updateStyle()"> px
+    <label>Text Color:</label>
+    <input type="color" id="textColor" value="#333333" onchange="updateStyle()">
+    <label>Background:</label>
+    <input type="color" id="bgColor" value="#ffffff" onchange="updateStyle()">
+    <button onclick="downloadImage()">📥 Download Image</button>
+  </div>
+
+  <div id="canvasArea">
+    <div id="textPreview">Your text here...</div>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
