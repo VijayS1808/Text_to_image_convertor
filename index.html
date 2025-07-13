@@ -1,33 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Insta Reels Text Image Creator</title>
+  <title>Insta Reels Text Image Creator (Pro)</title>
   <style>
     body {
-      background: #121212;
+      background: #111;
       color: #fff;
       font-family: 'Poppins', sans-serif;
       text-align: center;
       margin: 0;
       padding: 20px;
     }
-    input, button {
+    input, button, select {
       padding: 10px 20px;
       font-size: 18px;
       margin: 10px;
       border-radius: 5px;
       border: none;
     }
+    label {
+      margin: 0 10px;
+    }
     #canvasArea {
       display: none;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <h1>🎨 Insta Reels Text Image Creator</h1>
-  <input type="text" id="textInput" placeholder="Type your text here" size="40">
+  <h1>🎨 Insta Reels Text Image Creator (Pro)</h1>
+
+  <input type="text" id="textInput" placeholder="Type your text with emojis 😊🔥" size="40">
   <br>
+
+  <label>Font:</label>
+  <select id="fontSelect">
+    <option value="Poppins">Poppins</option>
+    <option value="Roboto">Roboto</option>
+    <option value="Arial">Arial</option>
+    <option value="Comic Sans MS">Comic Sans MS</option>
+  </select>
+
+  <label>Text Color:</label>
+  <input type="color" id="textColor" value="#ffffff">
+
+  <br>
+
+  <label>Background:</label>
+  <input type="file" id="bgImage" accept="image/*">
+  <label><input type="checkbox" id="useGradient" checked> Use Gradient</label>
+
+  <br>
+
+  <label>Shadow Color:</label>
+  <input type="color" id="shadowColor" value="#000000">
+
+  <label>Shadow Blur:</label>
+  <input type="number" id="shadowBlur" value="10" min="0" max="100">
+
+  <br>
+
+  <label><input type="checkbox" id="useBorder"> Add Border</label>
+
+  <label>Border Color:</label>
+  <input type="color" id="borderColor" value="#ffffff">
+
+  <label>Border Size (px):</label>
+  <input type="number" id="borderSize" value="3" min="1" max="20">
+
+  <br>
+
   <button onclick="createImage()">Generate Image</button>
   <button onclick="downloadImage()">Download Image</button>
 
@@ -38,48 +81,86 @@
       let canvas = document.getElementById("canvasArea");
       let ctx = canvas.getContext("2d");
       let text = document.getElementById("textInput").value;
+      let font = document.getElementById("fontSelect").value;
+      let textColor = document.getElementById("textColor").value;
+      let shadowColor = document.getElementById("shadowColor").value;
+      let shadowBlur = parseInt(document.getElementById("shadowBlur").value);
+      let useGradient = document.getElementById("useGradient").checked;
+      let bgImageFile = document.getElementById("bgImage").files[0];
+      let useBorder = document.getElementById("useBorder").checked;
+      let borderColor = document.getElementById("borderColor").value;
+      let borderSize = parseInt(document.getElementById("borderSize").value);
 
-      // Gradient Background
-      let gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
-      gradient.addColorStop(0, "#f093fb");
-      gradient.addColorStop(1, "#f5576c");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, 1080, 1920);
+      ctx.clearRect(0, 0, 1080, 1920);
 
-      // Text Styling
-      ctx.font = "bold 80px Poppins";
-      ctx.fillStyle = "#ffffff";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-
-      // Word Wrap Function
-      let maxWidth = 900;
-      let lineHeight = 100;
-      let x = 1080 / 2;
-      let y = 1920 / 2;
-
-      let words = text.split(' ');
-      let line = '';
-      let lines = [];
-      for (let n = 0; n < words.length; n++) {
-        let testLine = line + words[n] + ' ';
-        let metrics = ctx.measureText(testLine);
-        let testWidth = metrics.width;
-        if (testWidth > maxWidth && n > 0) {
-          lines.push(line);
-          line = words[n] + ' ';
-        } else {
-          line = testLine;
+      if (bgImageFile) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+          let img = new Image();
+          img.onload = function() {
+            ctx.drawImage(img, 0, 0, 1080, 1920);
+            drawText();
+          }
+          img.src = e.target.result;
         }
+        reader.readAsDataURL(bgImageFile);
+      } else {
+        if (useGradient) {
+          let gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+          gradient.addColorStop(0, "#f093fb");
+          gradient.addColorStop(1, "#f5576c");
+          ctx.fillStyle = gradient;
+        } else {
+          ctx.fillStyle = "#000000";
+        }
+        ctx.fillRect(0, 0, 1080, 1920);
+        drawText();
       }
-      lines.push(line);
 
-      let startY = y - (lines.length / 2) * lineHeight;
-      for (let i = 0; i < lines.length; i++) {
-        ctx.fillText(lines[i], x, startY + (i * lineHeight));
+      function drawText() {
+        ctx.font = "bold 80px " + font;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.shadowColor = shadowColor;
+        ctx.shadowBlur = shadowBlur;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 2;
+
+        let maxWidth = 900;
+        let lineHeight = 100;
+        let x = 1080 / 2;
+        let y = 1920 / 2;
+
+        let words = text.split(' ');
+        let line = '';
+        let lines = [];
+        for (let n = 0; n < words.length; n++) {
+          let testLine = line + words[n] + ' ';
+          let metrics = ctx.measureText(testLine);
+          let testWidth = metrics.width;
+          if (testWidth > maxWidth && n > 0) {
+            lines.push(line);
+            line = words[n] + ' ';
+          } else {
+            line = testLine;
+          }
+        }
+        lines.push(line);
+
+        let startY = y - (lines.length / 2) * lineHeight;
+        for (let i = 0; i < lines.length; i++) {
+          if (useBorder) {
+            ctx.lineWidth = borderSize;
+            ctx.strokeStyle = borderColor;
+            ctx.strokeText(lines[i], x, startY + (i * lineHeight));
+          }
+          ctx.fillStyle = textColor;
+          ctx.fillText(lines[i], x, startY + (i * lineHeight));
+        }
+
+        canvas.style.display = "block";
       }
-
-      canvas.style.display = "block";
     }
 
     function downloadImage() {
