@@ -1,4 +1,4 @@
-# 📸 Text-to-Image Insta Reels Creator
+# 📸 Text-to-Image Creator
 
 A simple and clean HTML+JavaScript-based web portal to convert custom text into beautiful images for Instagram Reels, stories, or social media posts.
 
